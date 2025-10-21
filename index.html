@@ -1,409 +1,610 @@
 <!doctype html>
 <html lang="es">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Catálogo Extra - Demo</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
-            margin: 16px;
-            color: #222
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Catálogo Servicios Extras - Hotel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --accent:#0b66a3;
+      --accent-2:#0b6623;
+      --soft:#f5f7fa;
+      --card:#ffffff;
+      --muted:#667085;
+      --glass: rgba(255,255,255,0.75);
+      --radius:12px;
+      --max-width:1100px;
+      --bg-css: linear-gradient(180deg,#eef6fb 0%,#f7fafc 100%);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#0f1724;background:var(--bg-css);transition:background .35s ease;}
+    .wrap{max-width:var(--max-width);margin:16px auto;padding:16px;position:relative;z-index:2}
+    header{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(11,102,163,0.12);background:linear-gradient(135deg,var(--accent),#5bb1e8)}
+    .logo span{display:block;color:#fff;font-weight:800;font-size:22px;text-align:center;line-height:56px}
+    h1{font-size:18px;margin:0;color:#073b57}
+    .controls{display:flex;gap:8px;align-items:center}
+    select,button,input{padding:8px 10px;border-radius:8px;border:1px solid #d1d9e6;background:#fff;cursor:pointer}
+    button.primary{background:var(--accent);color:#fff;border-color:rgba(0,0,0,0.06)}
+    .layout{display:grid;grid-template-columns:280px 1fr 360px;gap:14px;align-items:start}
+    @media (max-width:1000px){ .layout{grid-template-columns:1fr;} #sidebar{position:fixed;left:-320px;top:0;height:100%;z-index:60;transition:left .28s ease} #sidebar.open{left:0} #cart{position:fixed;right:12px;bottom:12px;width:320px} }
 
-        header {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            justify-content: space-between
-        }
+    /* Sidebar */
+    #sidebar{background:var(--glass);backdrop-filter: blur(6px);padding:14px;border-radius:var(--radius);box-shadow:0 8px 30px rgba(16,24,40,0.06);height:fit-content;min-height:120px;position:relative}
+    .side-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+    .menu-title{font-weight:700;margin-bottom:4px;color:#073b57}
+    .category{display:flex;flex-direction:column;gap:8px}
+    .cat-btn{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:#fff;border:1px solid #e6eef6;cursor:pointer}
+    .cat-btn:hover{box-shadow:0 6px 18px rgba(11,102,163,0.06)}
+    .sidebar-min{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e6eef6;cursor:pointer}
 
-        .lang-select {
-            padding: 6px
-        }
+    /* Main content */
+    main{min-height:60vh}
+    .promo{background:linear-gradient(90deg,#eaf6ff,#f3fff4);padding:12px;border-radius:12px;display:flex;align-items:center;gap:12px;box-shadow:0 6px 18px rgba(11,102,163,0.04)}
+    .promo img{width:84px;height:64px;object-fit:cover;border-radius:8px}
+    .promo .txt{flex:1}
+    .promo h3{margin:0;font-size:16px;color:#04476a}
+    .promo p{margin:4px 0;color:#065a8a}
+    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+    .card{background:var(--card);padding:12px;border-radius:12px;border:1px solid #e6eef6;box-shadow:0 8px 22px rgba(13,20,30,0.03);display:flex;flex-direction:column}
+    .card img{width:100%;height:150px;object-fit:cover;border-radius:8px}
+    .card h4{margin:10px 0 6px;font-size:16px;color:#073b57}
+    .desc{color:var(--muted);font-size:13px;flex:1}
+    .price{font-weight:700;color:var(--accent-2);margin-top:8px}
+    .actions{display:flex;gap:8px;margin-top:10px}
 
-        .cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 12px
-        }
+    /* Cart */
+    #cart{background:linear-gradient(180deg,#fff,#fbfeff);padding:14px;border-radius:12px;border:1px solid #e6eef6;box-shadow:0 10px 30px rgba(11,33,62,0.06);position:relative}
+    .cart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px}
+    #cart h3{margin:0 0 8px;font-size:16px;color:#073b57}
+    .line{display:flex;justify-content:space-between;align-items:center;margin:8px 0}
+    .total{font-weight:800;margin-top:12px;color:#063a56}
+    .cart-min{width:36px;height:36px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;background:#fff;border:1px solid #e6eef6;cursor:pointer}
 
-        .card {
-            border: 1px solid #ddd;
-            padding: 12px;
-            border-radius: 8px;
-            width: 260px;
-            background: #fff
-        }
+    /* Compact bars */
+    .compact-bar{
+      position:fixed;
+      z-index:80;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:6px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.96);
+      box-shadow:0 8px 20px rgba(8,20,40,0.08);
+      display:none;
+    }
+    #sidebarCompactBar{left:10px;top:70px}
+    #cartCompactBar{right:10px;bottom:14px}
+    .compact-bar button{border:1px solid #e6eef6;padding:8px 10px;border-radius:8px;background:#fff;cursor:pointer}
 
-        .card img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 6px
-        }
+    /* Minimized styles */
+    #sidebar.minimized{width:56px !important;padding:8px !important;overflow:hidden}
+    #sidebar.minimized .category,#sidebar.minimized .bg-control,#sidebar.minimized .menu-title,#sidebar.minimized .muted,#sidebar.minimized .cat-btn{display:none}
+    #sidebar.minimized .side-header{justify-content:center}
+    #cart.minimized{width:64px !important;padding:8px !important;overflow:hidden;height:auto}
+    #cart.minimized > :not(.cart-header){display:none}
+    #cart.minimized .cart-header{justify-content:center}
 
-        .card h4 {
-            margin: 8px 0 4px;
-            font-size: 16px
-        }
+    .muted{color:var(--muted);font-size:13px}
+    .bg-control{display:flex;gap:8px;align-items:center;margin-top:10px}
+    .bg-control input{width:220px}
+    .bg-decor{position:fixed;right:-120px;bottom:-120px;width:420px;height:420px;background:radial-gradient(circle at 30% 30%, rgba(11,102,163,0.08), transparent 30%), radial-gradient(circle at 70% 70%, rgba(11,102,35,0.06), transparent 30%);filter:blur(12px);z-index:0}
+    footer{margin-top:18px;font-size:13px;color:var(--muted);text-align:center}
 
-        .price {
-            font-weight: 700;
-            color: #0b6623
-        }
-
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px
-        }
-
-        button {
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background: #f7f7f7;
-            cursor: pointer
-        }
-
-        button.primary {
-            background: #0078d4;
-            color: #fff;
-            border-color: #006bb3
-        }
-
-        #cart {
-            position: fixed;
-            right: 16px;
-            bottom: 16px;
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 12px;
-            border-radius: 10px;
-            width: 320px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08)
-        }
-
-        #cart h3 {
-            margin: 0 0 8px
-        }
-
-        .line {
-            display: flex;
-            justify-content: space-between;
-            margin: 6px 0
-        }
-
-        .total {
-            font-weight: 800;
-            margin-top: 8px
-        }
-
-        input[type="number"] {
-            width: 66px;
-            padding: 6px
-        }
-
-        .offers {
-            margin-top: 12px;
-            padding: 10px;
-            background: #fff8e6;
-            border: 1px solid #ffe4b5;
-            border-radius: 8px
-        }
-
-        .control-row {
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        label {
-            font-size: 14px
-        }
-    </style>
+    @media (max-width:700px){
+      .hidden-mobile{display:none}
+      .logo{width:48px;height:48px}
+      input[type="search"]{display:none}
+      #sidebar.minimized{left:8px;top:60px;position:fixed;z-index:70;height:44px;border-radius:10px}
+      #cart.minimized{right:8px;bottom:70px;position:fixed;z-index:70;height:44px;border-radius:10px}
+      .layout{grid-template-columns:1fr}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <div class="wrap" role="application">
     <header>
+      <div class="brand">
+        <div class="logo"><span>H</span></div>
         <div>
-            <h2>Catálogo de Servicios Extras</h2>
-            <div class="offers" id="offersBox" style="display:none">
-                <strong id="offersTitle"></strong>
-                <div id="offersText"></div>
-            </div>
+          <h1>Servicios Extras - Hotel 5★</h1>
+          <div class="muted">Escanea el QR o usa este catálogo</div>
         </div>
-        <div class="control-row">
-            <label for="lang">Idioma</label>
-            <select id="lang" class="lang-select">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-            </select>
-        </div>
+      </div>
+
+      <div class="controls" role="toolbar" aria-label="Controles">
+        <input id="searchInput" type="search" placeholder="Buscar servicio o producto..." class="hidden-mobile" />
+        <select id="lang" aria-label="Idioma">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+        <button id="toggleSidebarBtn" class="primary" title="Abrir/Cerrar menú">Menú</button>
+        <button id="toggleCartBtn" title="Abrir/Cerrar carrito">Carrito</button>
+      </div>
     </header>
 
-    <main>
-        <section class="cards" id="catalog"></section>
-    </main>
+    <div class="layout" id="layout">
+      <!-- Sidebar -->
+      <aside id="sidebar" aria-label="Menú de categorías">
+        <div class="side-header">
+          <div>
+            <div class="menu-title">Categorías</div>
+            <div class="muted">Filtra por sección</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="minimizeSidebar" class="sidebar-min" title="Minimizar menú">_</button>
+            <button id="closeSidebar" class="sidebar-min" title="Cerrar menú">X</button>
+          </div>
+        </div>
 
-    <aside id="cart" aria-live="polite">
-        <h3 id="cartTitle">Carrito</h3>
+        <div class="category" id="categoryList"></div>
+
+        <div style="margin-top:12px">
+          <button id="showAll" style="width:100%;padding:10px;border-radius:10px;border:1px solid #e6eef6;background:#fff">Mostrar todo</button>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid #eef6fb"/>
+
+        <div class="menu-title" style="font-size:14px">Fondo (personalizable)</div>
+        <div class="bg-control">
+          <input id="bgUrl" placeholder="URL imagen de fondo (https...)" />
+          <button id="applyBg">Aplicar</button>
+        </div>
+        <div class="bg-control" style="margin-top:8px">
+          <select id="bgGradient">
+            <option value="linear-gradient(180deg,#eef6fb 0%,#f7fafc 100%)">Azul claro</option>
+            <option value="linear-gradient(180deg,#fff7ed 0%,#fff1f0 100%)">Crema</option>
+            <option value="linear-gradient(180deg,#f3fff4 0%,#eef9ff 100%)">Verde suave</option>
+            <option value="linear-gradient(180deg,#1e3a8a 0%,#0ea5e9 100%)">Azul intenso</option>
+          </select>
+          <button id="applyGradient">Usar gradiente</button>
+        </div>
+
+      </aside>
+
+      <!-- Main -->
+      <main>
+        <div id="promoContainer" class="promo" role="region" aria-live="polite">
+          <img id="promoImg" src="" alt="" />
+          <div class="txt">
+            <h3 id="promoTitle">Promoción</h3>
+            <p id="promoDesc">Descripción de promoción</p>
+          </div>
+          <div style="min-width:120px;text-align:right">
+            <div class="offers-banner" id="promoPrice">-</div>
+            <div style="margin-top:6px">
+              <button id="prevPromo">◀</button>
+              <button id="nextPromo" class="primary">▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
+          <div class="muted" id="resultsInfo">Mostrando todos los servicios</div>
+          <div class="muted">Idioma: <strong id="currentLang">Español</strong></div>
+        </div>
+
+        <section class="cards" id="catalog" aria-live="polite"></section>
+      </main>
+
+      <!-- Cart -->
+      <aside id="cart" aria-label="Carrito de compras">
+        <div class="cart-header">
+          <div>
+            <h3 id="cartTitle">Carrito</h3>
+            <div class="muted" id="cartCount">0 items</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button id="minimizeCart" class="cart-min" title="Minimizar carrito">_</button>
+            <button id="closeCart" class="cart-min" title="Cerrar carrito">X</button>
+          </div>
+        </div>
+
         <div id="cartItems"></div>
         <div class="total" id="cartTotal">Total: $0.00</div>
-        <div style="margin-top:10px">
-            <label for="roomInput" id="roomLabel">Número de habitación</label>
-            <input id="roomInput" type="text" placeholder="e.g. 101" />
+
+        <div style="margin-top:12px">
+          <label for="roomInput" id="roomLabel">Número de habitación</label>
+          <input id="roomInput" type="text" placeholder="e.g. 101" />
         </div>
-        <div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end">
-            <button id="clearBtn">Vaciar</button>
-            <button class="primary" id="requestBtn">Solicitar</button>
+
+        <div style="margin-top:10px;display:flex;gap:8px;justify-content:space-between">
+          <button id="clearBtn">Vaciar</button>
+          <button class="primary" id="requestBtn">Solicitar</button>
         </div>
-    </aside>
 
-    <script>
-        // Reemplazar por el correo destino
-        const emailDestino = "ejecutivo3.rrpp@ppesquero.co.cu";
+        <div style="margin-top:12px;font-size:13px;color:var(--muted)">
+          Las solicitudes se envían por correo al equipo de servicios del hotel.
+        </div>
+      </aside>
+    </div>
 
-        // Catálogo base con textos multi-idioma y oferta
-        const catalog = [
-            {
-                id: "spa001",
-                img: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=60",
-                name: { es: "Masaje Relajante 60min", en: "Relaxing Massage 60min" },
-                desc: { es: "Masaje profesional para aliviar tensiones y relajar cuerpo y mente.", en: "Professional massage to relieve tension and relax body and mind." },
-                price: 70.00,
-                currency: "USD",
-                offer: false
-            },
-            {
-                id: "dinner001",
-                img: "https://images.unsplash.com/photo-1541542684-6b2a3c2b3f9d?w=800&q=60",
-                name: { es: "Cena Privada", en: "Private Dinner" },
-                desc: { es: "Cena exclusiva para dos en un ambiente privado con menú gourmet.", en: "Exclusive dinner for two in a private setting with gourmet menu." },
-                price: 120.00,
-                currency: "USD",
-                offer: true,
-                offerText: { es: "20% de descuento hoy", en: "20% off today" },
-                offerPrice: 96.00
-            },
-            {
-                id: "dinner002",
-                img: "https://images.unsplash.com/photo-1541542684-6b2a3c2b3f9d?w=800&q=60",
-                name: { es: "Cena Privada", en: "Private Dinner" },
-                desc: { es: "Cena exclusiva para dos en un ambiente privado con menú gourmet.", en: "Exclusive dinner for two in a private setting with gourmet menu." },
-                price: 120.00,
-                currency: "USD",
-                offer: true,
-                offerText: { es: "20% de descuento hoy", en: "20% off today" },
-                offerPrice: 96.00
-            },
-            {
-                id: "dinner001",
-                img: "data:image/jpeg;base64,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",
-                name: { es: "Cena Privada", en: "Private Dinner" },
-                desc: { es: "Cena exclusiva para dos en un ambiente privado con menú gourmet.", en: "Exclusive dinner for two in a private setting with gourmet menu." },
-                price: 120.00,
-                currency: "USD",
-                offer: true,
-                offerText: { es: "20% de descuento hoy", en: "20% off today" },
-                offerPrice: 96.00
-            },
-            {
-                id: "dinner001",
-                img: "https://images.unsplash.com/photo-1541542684-6b2a3c2b3f9d?w=800&q=60",
-                name: { es: "Cena Privada", en: "Private Dinner" },
-                desc: { es: "Cena exclusiva para dos en un ambiente privado con menú gourmet.", en: "Exclusive dinner for two in a private setting with gourmet menu." },
-                price: 120.00,
-                currency: "USD",
-                offer: true,
-                offerText: { es: "20% de descuento hoy", en: "20% off today" },
-                offerPrice: 96.00
-            },
-            {
-                id: "bottle001",
-                img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=60",
-                name: { es: "Botella Premium", en: "Premium Bottle" },
-                desc: { es: "Botella selecta para disfrutar en su habitación o en el bar.", en: "Selected bottle to enjoy in your room or at the bar." },
-                price: 45.00,
-                currency: "USD",
-                offer: false
-            }
-        ];
+    <footer>Diseñado para uso interno del hotel • Edita productos en el arreglo <code>catalog</code> dentro del script</footer>
+  </div>
 
-        let lang = "es";
-        const cart = {};
+  <!-- Compact bars (para reabrir menú / carrito después de cerrar) -->
+  <div id="sidebarCompactBar" class="compact-bar" aria-hidden="true"></div>
+  <div id="cartCompactBar" class="compact-bar" aria-hidden="true"></div>
 
-        const catalogEl = document.getElementById("catalog");
-        const langSelect = document.getElementById("lang");
-        const cartItemsEl = document.getElementById("cartItems");
-        const cartTotalEl = document.getElementById("cartTotal");
-        const requestBtn = document.getElementById("requestBtn");
-        const clearBtn = document.getElementById("clearBtn");
-        const roomInput = document.getElementById("roomInput");
-        const offersBox = document.getElementById("offersBox");
-        const offersTitle = document.getElementById("offersTitle");
-        const offersText = document.getElementById("offersText");
-        const cartTitle = document.getElementById("cartTitle");
-        const roomLabel = document.getElementById("roomLabel");
+  <script>
+    /* ============================== */
+    /*  CONFIGURACIÓN FÁCIL (al inicio) */
+    /*  Cambia aquí la dirección de correo si lo necesitas */
+    const EMAIL_DESTINATION = "tu-correo@hotel.com";
+    /* ============================== */
 
-        function currencyFormat(v) { return "$" + v.toFixed(2); }
+    /* ---------- Datos: promociones y catálogo ---------- */
+    const promotions = [
+      { id:"p1", img:"https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=1200&q=60", title:{es:"20% en Cena Privada",en:"20% off Private Dinner"}, desc:{es:"Experiencia gourmet en ambiente privado. Oferta por tiempo limitado.",en:"Gourmet private dinner experience. Limited time offer."}, price:{es:"Desde $96",en:"From $96"} },
+      { id:"p2", img:"https://images.unsplash.com/photo-1556228720-5f7c8a1da0f9?w=1200&q=60", title:{es:"Masaje relajante 60min - pack",en:"Relaxing Massage 60min - pack"}, desc:{es:"Relájate con nuestro masaje profesional. Reserva con descuento.",en:"Relax with our professional massage. Book now with discount."}, price:{es:"$70",en:"$70"} }
+    ];
+    let promoIndex = 0, promoTimer = null, promoInterval = 6000;
 
-        function renderCatalog() {
-            catalogEl.innerHTML = "";
-            catalog.forEach(item => {
-                const card = document.createElement("article");
-                card.className = "card";
-                card.innerHTML = `
-          <img src="${item.img}" alt="${item.name[lang]}" />
-          <h4>${item.name[lang]}</h4>
-          <div>${item.desc[lang]}</div>
-          <div style="margin-top:6px" class="price">${currencyFormat(item.offer ? (item.offerPrice || item.price) : item.price)}</div>
+    const catalog = [
+      // Tratamientos del SPA
+      { id:"spa001", cat:"Tratamientos del SPA", img:"https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=60", name:{es:"Masaje Relajante 60min",en:"Relaxing Massage 60min"}, desc:{es:"Masaje profesional para aliviar tensiones.",en:"Professional massage to relieve tension."}, price:70.00, currency:"USD", offer:false },
+      { id:"spa002", cat:"Tratamientos del SPA", img:"https://images.unsplash.com/photo-1556228720-5f7c8a1da0f9?w=800&q=60", name:{es:"Masaje Profundo 90min",en:"Deep Massage 90min"}, desc:{es:"Terapéutico profundo para contracturas.",en:"Therapeutic deep massage for knots."}, price:95.00, currency:"USD", offer:true, offerText:{es:"10% hoy",en:"10% today"}, offerPrice:85.50 },
+
+      // Salón de Belleza
+      { id:"belleza001", cat:"Salón de Belleza", img:"https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=60", name:{es:"Peinado Profesional",en:"Professional Hairstyling"}, desc:{es:"Peinado y styling para ocasiones especiales.",en:"Hair styling for special occasions."}, price:45.00, currency:"USD", offer:false },
+
+      // Servicio de Boda
+      { id:"boda001", cat:"Servicio de Boda", img:"https://images.unsplash.com/photo-1519677100203-a0e668c92439?w=800&q=60", name:{es:"Paquete Boda Básico",en:"Basic Wedding Package"}, desc:{es:"Coordinación y espacios para ceremonia íntima.",en:"Coordination and intimate ceremony spaces."}, price:1200.00, currency:"USD", offer:false },
+
+      // Ventas en Recepción
+      { id:"recepcion001", cat:"Ventas en Recepción", img:"https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=800&q=60", name:{es:"Mapa Turístico Local",en:"Local Tourist Map"}, desc:{es:"Mapa impreso con recomendaciones locales.",en:"Printed map with local recommendations."}, price:5.00, currency:"USD", offer:false },
+
+      // Extra Carta Comida
+      { id:"carta001", cat:"Extra Carta Comida", img:"https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=60", name:{es:"Tapa Gourmet",en:"Gourmet Starter"}, desc:{es:"Entrada seleccionada por el chef.",en:"Chef-selected starter."}, price:12.00, currency:"USD", offer:false },
+
+      // Cenas privadas
+      { id:"dinner001", cat:"Cenas privadas", img:"https://images.unsplash.com/photo-1541542684-6b2a3c2b3f9d?w=800&q=60", name:{es:"Cena Privada para 2",en:"Private Dinner for 2"}, desc:{es:"Menú gourmet y ambiente privado.",en:"Gourmet menu and private ambiance."}, price:120.00, currency:"USD", offer:true, offerText:{es:"20% de descuento hoy",en:"20% off today"}, offerPrice:96.00 },
+
+      // Vinos y Cavas
+      { id:"vino001", cat:"Vinos y Cavas", img:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=60", name:{es:"Botella Premium",en:"Premium Bottle"}, desc:{es:"Selección de la cava para su disfrute.",en:"Cellar selection for your enjoyment."}, price:45.00, currency:"USD", offer:false },
+
+      // Servicio de Lavandería
+      { id:"lav001", cat:"Servicio de Lavandería", img:"https://images.unsplash.com/photo-1542831371-d531d36971e6?w=800&q=60", name:{es:"Lavado Express",en:"Express Wash"}, desc:{es:"Servicio rápido con entrega en el día.",en:"Quick service with same-day delivery."}, price:8.00, currency:"USD", offer:false }
+    ];
+
+    const categoriesOrder = ["Tratamientos del SPA","Salón de Belleza","Servicio de Boda","Ventas en Recepción","Extra Carta Comida","Cenas privadas","Vinos y Cavas","Servicio de Lavandería"];
+
+    /* ---------- UI refs ---------- */
+    const catalogEl = document.getElementById("catalog");
+    const langSelect = document.getElementById("lang");
+    const cartItemsEl = document.getElementById("cartItems");
+    const cartTotalEl = document.getElementById("cartTotal");
+    const requestBtn = document.getElementById("requestBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const roomInput = document.getElementById("roomInput");
+    const promoImg = document.getElementById("promoImg");
+    const promoTitle = document.getElementById("promoTitle");
+    const promoDesc = document.getElementById("promoDesc");
+    const promoPrice = document.getElementById("promoPrice");
+    const prevPromo = document.getElementById("prevPromo");
+    const nextPromo = document.getElementById("nextPromo");
+    const resultsInfo = document.getElementById("resultsInfo");
+    const currentLangLabel = document.getElementById("currentLang");
+    const categoryList = document.getElementById("categoryList");
+    const sidebar = document.getElementById("sidebar");
+    const toggleSidebarBtn = document.getElementById("toggleSidebarBtn");
+    const toggleCartBtn = document.getElementById("toggleCartBtn");
+    const minimizeSidebarBtn = document.getElementById("minimizeSidebar");
+    const closeSidebarBtn = document.getElementById("closeSidebar");
+    const minimizeCartBtn = document.getElementById("minimizeCart");
+    const closeCartBtn = document.getElementById("closeCart");
+    const cartEl = document.getElementById("cart");
+    const searchInput = document.getElementById("searchInput");
+    const cartCountEl = document.getElementById("cartCount");
+    const bgUrlInput = document.getElementById("bgUrl");
+    const applyBgBtn = document.getElementById("applyBg");
+    const bgGradientSel = document.getElementById("bgGradient");
+    const applyGradientBtn = document.getElementById("applyGradient");
+    const showAllBtn = document.getElementById("showAll");
+    const sidebarCompactBar = document.getElementById('sidebarCompactBar');
+    const cartCompactBar = document.getElementById('cartCompactBar');
+
+    /* ---------- state ---------- */
+    let lang = 'es';
+    let cart = {};
+    let activeCategory = null;
+    let filterQuery = "";
+
+    /* ---------- util ---------- */
+    function currencyFormat(v){ return "$" + v.toFixed(2); }
+
+    /* ---------- promos ---------- */
+    function renderPromo(){
+      const p = promotions[promoIndex];
+      promoImg.src = p.img;
+      promoImg.alt = p.title[lang] || p.title['es'];
+      promoTitle.textContent = p.title[lang] || p.title['es'];
+      promoDesc.textContent = p.desc[lang] || p.desc['es'];
+      promoPrice.textContent = p.price[lang] || p.price['es'];
+    }
+    function startPromoTimer(){
+      if(promoTimer) clearInterval(promoTimer);
+      promoTimer = setInterval(()=>{ promoIndex = (promoIndex+1) % promotions.length; renderPromo(); }, promoInterval);
+    }
+    prevPromo.onclick = ()=>{ promoIndex = (promoIndex-1 + promotions.length) % promotions.length; renderPromo(); startPromoTimer(); }
+    nextPromo.onclick = ()=>{ promoIndex = (promoIndex+1) % promotions.length; renderPromo(); startPromoTimer(); }
+
+    /* ---------- categories ---------- */
+    function renderCategories(){
+      categoryList.innerHTML = "";
+      categoriesOrder.forEach(cat=>{
+        const count = catalog.filter(i=>i.cat===cat).length;
+        const btn = document.createElement("div");
+        btn.className = "cat-btn";
+        btn.tabIndex = 0;
+        btn.innerHTML = `<div>${cat}</div><div class="count">${count}</div>`;
+        btn.onclick = ()=>{ activeCategory = (activeCategory===cat? null: cat); renderCatalog(); };
+        categoryList.appendChild(btn);
+      });
+    }
+
+    /* ---------- catalog ---------- */
+    function renderCatalog(){
+      catalogEl.innerHTML = "";
+      const q = (filterQuery || "").trim().toLowerCase();
+      const items = catalog.filter(item=>{
+        if(activeCategory && item.cat !== activeCategory) return false;
+        if(q && !( (item.name[lang]||'').toLowerCase().includes(q) || (item.desc[lang]||'').toLowerCase().includes(q) || (item.cat||'').toLowerCase().includes(q) )) return false;
+        return true;
+      });
+      resultsInfo.textContent = items.length + (lang==="es" ? " servicios" : " items") + (activeCategory ? " • " + activeCategory : "");
+      items.forEach(item=>{
+        const card = document.createElement("article");
+        card.className = "card";
+        const displayPrice = item.offer ? (item.offerPrice||item.price) : item.price;
+        const priceText = item.offer ? `<div style="font-size:13px;color:#b21b1b;text-decoration:line-through">${currencyFormat(item.price)}</div><div class="price">${currencyFormat(displayPrice)}</div>` : `<div class="price">${currencyFormat(displayPrice)}</div>`;
+        card.innerHTML = `
+          <img src="${item.img}" alt="${(item.name[lang]||item.name['es'])}" loading="lazy"/>
+          <h4>${item.name[lang]||item.name['es']}</h4>
+          <div class="desc">${item.desc[lang]||item.desc['es']}</div>
+          <div style="margin-top:8px">${priceText}</div>
           <div class="actions">
             <button data-id="${item.id}" class="addBtn">Agregar</button>
             <button data-id="${item.id}" class="viewBtn">Ver</button>
           </div>
         `;
-                catalogEl.appendChild(card);
-            });
-            // Mostrar ofertas
-            const firstOffer = catalog.find(c => c.offer);
-            if (firstOffer) {
-                offersBox.style.display = "block";
-                offersTitle.textContent = firstOffer.offerText ? firstOffer.offerText[lang] || "" : (lang === "es" ? "Oferta" : "Offer");
-                offersText.textContent = firstOffer.name[lang] + " - " + currencyFormat(firstOffer.offerPrice || firstOffer.price);
-            } else {
-                offersBox.style.display = "none";
-            }
-            attachCardEvents();
-        }
+        catalogEl.appendChild(card);
+      });
+      attachCardEvents();
+    }
 
-        function attachCardEvents() {
-            document.querySelectorAll(".addBtn").forEach(btn => {
-                btn.onclick = () => {
-                    const id = btn.getAttribute("data-id");
-                    addToCart(id, 1);
-                };
-            });
-            document.querySelectorAll(".viewBtn").forEach(btn => {
-                btn.onclick = () => {
-                    const id = btn.getAttribute("data-id");
-                    const it = catalog.find(c => c.id === id);
-                    alert(`${it.name[lang]}\n\n${it.desc[lang]}\n\nPrecio: ${currencyFormat(it.offer ? (it.offerPrice || it.price) : it.price)}`);
-                };
-            });
-        }
-
-        function addToCart(id, qty) {
-            const it = catalog.find(c => c.id === id);
-            if (!it) return;
-            cart[id] = cart[id] || { item: it, qty: 0 };
-            cart[id].qty += qty;
-            renderCart();
-        }
-
-        function renderCart() {
-            cartItemsEl.innerHTML = "";
-            let total = 0;
-            Object.values(cart).forEach(entry => {
-                const price = entry.item.offer ? (entry.item.offerPrice || entry.item.price) : entry.item.price;
-                const lineTotal = price * entry.qty;
-                total += lineTotal;
-                const div = document.createElement("div");
-                div.className = "line";
-                div.innerHTML = `
-          <div style="width:60%">${entry.item.name[lang]} x <input type="number" min="1" value="${entry.qty}" data-id="${entry.item.id}" style="width:56px"/></div>
-          <div style="text-align:right">${currencyFormat(lineTotal)} <button data-id="${entry.item.id}" style="margin-left:8px">X</button></div>
-        `;
-                cartItemsEl.appendChild(div);
-            });
-            cartTotalEl.textContent = (lang === "es" ? "Total: " : "Total: ") + currencyFormat(total);
-            // attach cart controls
-            cartItemsEl.querySelectorAll('input[type="number"]').forEach(input => {
-                input.onchange = () => {
-                    const id = input.getAttribute("data-id");
-                    const v = parseInt(input.value) || 1;
-                    cart[id].qty = v;
-                    renderCart();
-                };
-            });
-            cartItemsEl.querySelectorAll('button[data-id]').forEach(b => {
-                b.onclick = () => {
-                    const id = b.getAttribute("data-id");
-                    delete cart[id];
-                    renderCart();
-                };
-            });
-        }
-
-        // Vaciar carrito
-        clearBtn.onclick = () => {
-            for (const k in cart) delete cart[k];
-            renderCart();
+    function attachCardEvents(){
+      document.querySelectorAll(".addBtn").forEach(btn=>{
+        btn.onclick = ()=> addToCart(btn.getAttribute("data-id"),1);
+      });
+      document.querySelectorAll(".viewBtn").forEach(btn=>{
+        btn.onclick = ()=> {
+          const id = btn.getAttribute("data-id");
+          const it = catalog.find(c=>c.id===id);
+          alert(`${it.name[lang]||it.name['es']}\n\n${it.desc[lang]||it.desc['es']}\n\nPrecio: ${currencyFormat(it.offer ? (it.offerPrice||it.price) : it.price)}`);
         };
+      });
+    }
 
-        // Preparar envío por mailto
-        requestBtn.onclick = () => {
-            const room = (roomInput.value || "").trim();
-            if (!room) {
-                alert(lang === "es" ? "Ingrese número de habitación." : "Please enter room number.");
-                return;
-            }
-            const items = Object.values(cart);
-            if (items.length === 0) {
-                alert(lang === "es" ? "El carrito está vacío." : "Cart is empty.");
-                return;
-            }
-            let bodyLines = [];
-            bodyLines.push(lang === "es" ? "Solicitud de servicios extras" : "Extra services request");
-            bodyLines.push("");
-            bodyLines.push((lang === "es" ? "Habitación:" : "Room:") + " " + room);
-            bodyLines.push("");
-            bodyLines.push((lang === "es" ? "Items:" : "Items:"));
-            let total = 0;
-            items.forEach(entry => {
-                const price = entry.item.offer ? (entry.item.offerPrice || entry.item.price) : entry.item.price;
-                const lineTotal = price * entry.qty;
-                total += lineTotal;
-                bodyLines.push(`- ${entry.item.name[lang]} x${entry.qty} = ${currencyFormat(lineTotal)}`);
-            });
-            bodyLines.push("");
-            bodyLines.push((lang === "es" ? "Total:" : "Total:") + " " + currencyFormat(total));
-            bodyLines.push("");
-            bodyLines.push(lang === "es" ? "Por favor confirmar disponibilidad y forma de pago." : "Please confirm availability and payment method.");
-            const subject = encodeURIComponent(lang === "es" ? "Solicitud de servicios - Hab " + room : "Service request - Rm " + room);
-            const body = encodeURIComponent(bodyLines.join("\n"));
-            // Usamos mailto como opción simple; se abrirá el cliente de correo del huésped
-            const mailto = `mailto:${encodeURIComponent(emailDestino)}?subject=${subject}&body=${body}`;
-            window.location.href = mailto;
+    /* ---------- cart ---------- */
+    function addToCart(id, qty){
+      const it = catalog.find(c=>c.id===id);
+      if(!it) return;
+      cart[id] = cart[id] || { item: it, qty:0 };
+      cart[id].qty += qty;
+      renderCart();
+    }
+    function renderCart(){
+      cartItemsEl.innerHTML = "";
+      let total = 0;
+      const values = Object.values(cart);
+      cartCountEl.textContent = values.length + " items";
+      values.forEach(entry=>{
+        const price = entry.item.offer ? (entry.item.offerPrice || entry.item.price) : entry.item.price;
+        const lineTotal = price * entry.qty;
+        total += lineTotal;
+        const div = document.createElement("div");
+        div.className = "line";
+        div.innerHTML = `<div style="width:60%">${entry.item.name[lang]||entry.item.name['es']} x <input type="number" min="1" value="${entry.qty}" data-id="${entry.item.id}" style="width:56px"/></div><div style="text-align:right">${currencyFormat(lineTotal)} <button data-id="${entry.item.id}" style="margin-left:8px">X</button></div>`;
+        cartItemsEl.appendChild(div);
+      });
+      cartTotalEl.textContent = (lang==="es" ? "Total: " : "Total: ") + currencyFormat(total);
+      cartItemsEl.querySelectorAll('input[type="number"]').forEach(input=>{
+        input.onchange = ()=> {
+          const id = input.getAttribute("data-id");
+          const v = parseInt(input.value) || 1;
+          cart[id].qty = v;
+          renderCart();
         };
-
-        // idioma selector
-        langSelect.onchange = () => {
-            lang = langSelect.value;
-            // textos UI mínimos
-            cartTitle.textContent = (lang === "es" ? "Carrito" : "Cart");
-            roomLabel.textContent = (lang === "es" ? "Número de habitación" : "Room number");
-            requestBtn.textContent = (lang === "es" ? "Solicitar" : "Request");
-            clearBtn.textContent = (lang === "es" ? "Vaciar" : "Clear");
-            renderCatalog();
-            renderCart();
+      });
+      cartItemsEl.querySelectorAll('button[data-id]').forEach(b=>{
+        b.onclick = ()=>{
+          const id = b.getAttribute("data-id");
+          delete cart[id];
+          renderCart();
         };
+      });
+    }
+    clearBtn.onclick = ()=> { cart = {}; renderCart(); };
 
-        // Inicializar
-        renderCatalog();
-        renderCart();
+    /* ---------- request (mailto fallback) ---------- */
+    requestBtn.onclick = ()=> {
+      const room = (roomInput.value || "").trim();
+      if(!room){ alert(lang==="es" ? "Ingrese número de habitación." : "Please enter room number."); return; }
+      const items = Object.values(cart);
+      if(items.length===0){ alert(lang==="es" ? "El carrito está vacío." : "Cart is empty."); return; }
+      let bodyLines = [];
+      bodyLines.push(lang==="es" ? "Solicitud de servicios extras" : "Extra services request");
+      bodyLines.push("");
+      bodyLines.push((lang==="es"?"Habitación:":"Room:") + " " + room);
+      bodyLines.push("");
+      bodyLines.push((lang==="es"?"Items:":"Items:"));
+      let total = 0;
+      items.forEach(entry=>{
+        const price = entry.item.offer ? (entry.item.offerPrice || entry.item.price) : entry.item.price;
+        const lineTotal = price * entry.qty;
+        total += lineTotal;
+        bodyLines.push(`- ${entry.item.name[lang]||entry.item.name['es']} x${entry.qty} = ${currencyFormat(lineTotal)}`);
+      });
+      bodyLines.push("");
+      bodyLines.push((lang==="es"?"Total:":"Total:") + " " + currencyFormat(total));
+      bodyLines.push("");
+      bodyLines.push(lang==="es" ? "Por favor confirmar disponibilidad y forma de pago." : "Please confirm availability and payment method.");
+      const subject = encodeURIComponent((lang==="es" ? "Solicitud de servicios - Hab " : "Service request - Rm ") + room);
+      const body = encodeURIComponent(bodyLines.join("\n"));
+      const mailto = `mailto:${encodeURIComponent(EMAIL_DESTINATION)}?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
+    };
 
-        // Detectar idioma del navegador y ajustar (opcional)
-        const navLang = navigator.language ? navigator.language.slice(0, 2) : null;
-        if (navLang && (navLang === "en" || navLang === "es")) {
-            lang = navLang;
-            langSelect.value = lang;
-            langSelect.dispatchEvent(new Event('change'));
-        }
-    </script>
+    /* ---------- language, search, UI controls ---------- */
+    function applyLang(){
+      document.getElementById('cartTitle').textContent = (lang==="es"?"Carrito":"Cart");
+      document.getElementById('roomLabel').textContent = (lang==="es"?"Número de habitación":"Room number");
+      requestBtn.textContent = (lang==="es"?"Solicitar":"Request");
+      clearBtn.textContent = (lang==="es"?"Vaciar":"Clear");
+      document.getElementById('currentLang').textContent = (lang==="es"?"Español":"English");
+      renderCatalog(); renderCart(); renderPromo();
+    }
+    langSelect.onchange = ()=>{ lang = langSelect.value; applyLang(); };
+    searchInput.oninput = ()=>{ filterQuery = searchInput.value; renderCatalog(); };
+
+    /* ---------- sidebar & cart toggle + minimize/expand/compact ---------- */
+    toggleSidebarBtn.onclick = ()=>{ sidebar.classList.toggle('open'); };
+    toggleCartBtn.onclick = ()=>{ cartEl.classList.toggle('open'); cartEl.style.display = cartEl.style.display === 'none' ? '' : ''; };
+
+    function setSidebarMinimized(min){
+      if(min){
+        sidebar.classList.add('minimized');
+        if(window.innerWidth<=700){ sidebar.style.display='none'; sidebarCompactBar.style.display='flex'; }
+      } else {
+        sidebar.classList.remove('minimized');
+        sidebar.style.display = '';
+        sidebarCompactBar.style.display = 'none';
+      }
+    }
+    function setCartMinimized(min){
+      if(min){
+        cartEl.classList.add('minimized');
+        if(window.innerWidth<=700){ cartEl.style.display='none'; cartCompactBar.style.display='flex'; }
+      } else {
+        cartEl.classList.remove('minimized');
+        cartEl.style.display = '';
+        cartCompactBar.style.display = 'none';
+      }
+    }
+
+    minimizeSidebarBtn.onclick = ()=> { setSidebarMinimized(!sidebar.classList.contains('minimized')); };
+    minimizeCartBtn.onclick = ()=> { setCartMinimized(!cartEl.classList.contains('minimized')); };
+
+    closeSidebarBtn.onclick = ()=> {
+      sidebar.style.display = 'none';
+      sidebarCompactBar.style.display = 'flex';
+      localStorage.setItem('sidebar_closed', '1');
+    };
+    closeCartBtn.onclick = ()=> {
+      cartEl.style.display = 'none';
+      cartCompactBar.style.display = 'flex';
+      localStorage.setItem('cart_closed', '1');
+    };
+
+    // Create compact expand buttons if not present
+    function ensureCompactBars(){
+      if(!sidebarCompactBar.querySelector('#expandSidebarCompact')){
+        sidebarCompactBar.innerHTML = `<button id="expandSidebarCompact" title="Abrir menú">≡</button>`;
+        document.getElementById('expandSidebarCompact').onclick = ()=>{
+          sidebar.style.display = '';
+          sidebarCompactBar.style.display = 'none';
+          localStorage.removeItem('sidebar_closed');
+        };
+      }
+      if(!cartCompactBar.querySelector('#expandCartCompact')){
+        cartCompactBar.innerHTML = `<button id="expandCartCompact" title="Abrir carrito">🛒</button>`;
+        document.getElementById('expandCartCompact').onclick = ()=>{
+          cartEl.style.display = '';
+          cartCompactBar.style.display = 'none';
+          localStorage.removeItem('cart_closed');
+        };
+      }
+    }
+
+    /* ---------- background controls (localStorage) ---------- */
+    function applyBackground(css){
+      document.documentElement.style.setProperty('--bg-css', css);
+      localStorage.setItem('catalog_bg', css);
+    }
+    applyBgBtn.onclick = ()=>{
+      const url = bgUrlInput.value.trim();
+      if(!url){ alert(lang==='es' ? 'Ingrese URL válida' : 'Enter valid URL'); return; }
+      const css = `url("${url}") center/cover fixed no-repeat, linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.6))`;
+      applyBackground(css);
+    };
+    applyGradientBtn.onclick = ()=>{
+      const grad = bgGradientSel.value;
+      applyBackground(grad);
+    };
+    const savedBg = localStorage.getItem('catalog_bg');
+    if(savedBg) applyBackground(savedBg);
+
+    /* ---------- misc UI ---------- */
+    showAllBtn.onclick = ()=>{ activeCategory=null; renderCatalog(); };
+
+    document.addEventListener('click', (e)=>{
+      if(window.innerWidth<=1000 && !sidebar.contains(e.target) && !toggleSidebarBtn.contains(e.target)){
+        sidebar.classList.remove('open');
+      }
+    });
+
+    /* ---------- initialize ---------- */
+    function init(){
+      renderCategories();
+      renderCatalog();
+      renderCart();
+      renderPromo();
+      startPromoTimer();
+      ensureCompactBars();
+      // respect saved closed state
+      if(localStorage.getItem('sidebar_closed')==='1'){ sidebar.style.display='none'; sidebarCompactBar.style.display='flex'; }
+      if(localStorage.getItem('cart_closed')==='1'){ cartEl.style.display='none'; cartCompactBar.style.display='flex'; }
+      // language from browser
+      const navLang = navigator.language ? navigator.language.slice(0,2) : null;
+      if(navLang && (navLang==="es"||navLang==="en")){ lang = navLang; langSelect.value = lang; applyLang(); }
+    }
+    init();
+
+    /* ---------- accessibility and resize behavior ---------- */
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ sidebar.classList.remove('open'); } });
+    window.addEventListener('resize', ()=> {
+      if(window.innerWidth > 1000){
+        if(!localStorage.getItem('sidebar_closed')) sidebarCompactBar.style.display = 'none';
+        if(!localStorage.getItem('cart_closed')) cartCompactBar.style.display = 'none';
+        if(sidebar.classList.contains('minimized')) sidebar.style.display = '';
+        if(cartEl.classList.contains('minimized')) cartEl.style.display = '';
+      }
+    });
+
+    /* ========== NOTA: editar productos ========== 
+       - Para añadir/quitar/editar productos modifica el arreglo `catalog` al inicio del script.
+       - Estructura de un producto (campos obligatorios):
+         {
+           id: "unique_id",
+           cat: "Categoría exactamente como aparece en categoriesOrder",
+           img: "https://tu-dominio/imagen.jpg",
+           name: { es: "Nombre en español", en: "Name in English" },
+           desc: { es: "Descripción en español", en: "Description in English" },
+           price: 45.00,
+           currency: "USD",
+           offer: false,                // true si hay descuento
+           offerText: { es: "10% hoy", en: "10% today" }, // opcional
+           offerPrice: 40.50           // opcional si offer true
+         }
+       - Guarda imágenes en tu repo en /images y usa rutas relativas "images/mi.jpg" o usa URLs CDN.
+       - Para idiomas adicionales añade claves (por ejemplo fr) en name y desc y agrega la opción en el <select id="lang">.
+    */
+
+  </script>
 </body>
-
 </html>
